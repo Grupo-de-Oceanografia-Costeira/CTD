@@ -10,7 +10,7 @@ const int rLed = 8;        //
 const int LM35 = A0;       // Temperature sensor
 
 File dataFile;
-unsigned long int time;
+unsigned long int ttime;
 float temp;
 
 const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
@@ -20,7 +20,7 @@ void setup(){
   pinMode(rLed, OUTPUT);
   pinMode(gLed, OUTPUT);
   Serial.begin(9600);
-  
+
   if (!SD.begin(CS_PIN)) {
     Serial.println(F("begin failed"));
     digitalWrite(rLed, HIGH);
@@ -33,7 +33,8 @@ void setup(){
       fileName[BASE_NAME_SIZE + 1] = '0';
       fileName[BASE_NAME_SIZE]++;
     } else {
-      Serial.println(F("Can't create file name"));
+      // Blink 3 times
+      Serial.println("Can't create file name");
       digitalWrite(rLed, LOW);
       delay(1000);
       digitalWrite(rLed, HIGH);
@@ -45,12 +46,18 @@ void setup(){
       digitalWrite(rLed, LOW);
       delay(1000);
       digitalWrite(rLed, HIGH);
+      delay(1000);
+      digitalWrite(rLed, LOW);
       return;
     }
   }
   dataFfile = SD.open(fileName, FILE_WRITE);
   if (!dataFile) {
-    Serial.println(F("open failed"));
+    // Blink 3 times faster
+    Serial.println("open failed");
+    delay(200);
+    digitalWrite(rLed, HIGH);
+    delay(200);
     digitalWrite(rLed, LOW);
     delay(200);
     digitalWrite(rLed, HIGH);
@@ -62,7 +69,7 @@ void setup(){
     digitalWrite(rLed, LOW);
     return;
   }
-  Serial.print(F("opened: "));
+  Serial.print("opened: ");
   Serial.println(fileName);
   digitalWrite(gLed,HIGH);
   delay(2000);
@@ -75,14 +82,14 @@ void setup(){
 }
 
 void loop(){
-  time = millis();
+  ttime = millis();
   temp = (float(analogRead(LM35))*5/(1023))/0.01;
   if (temp > 28) {
     digitalWrite(rLed, HIGH);
     delay(250);
     digitalWrite(rLed, LOW);
     delay(250);
-  } 
+  }
   else {
     digitalWrite(gLed,HIGH);
     delay(250);
@@ -90,10 +97,11 @@ void loop(){
     delay(250);
   }
   File dataFile = SD.open(fileName, FILE_WRITE);
-  dataFile.print(temp); 
+  dataFile.print(ttime);
   dataFile.print(",");
   dataFile.print(temp);
   dataFile.close();
+
   Serial.print("The Temp is: ");
   Serial.println(temp);
   Serial.print("The time is: ");
