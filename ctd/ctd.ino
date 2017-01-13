@@ -19,13 +19,26 @@ char fileName[] = FILE_BASE_NAME "00.csv";
 void setup(){
   pinMode(rLed, OUTPUT);
   pinMode(gLed, OUTPUT);
+  pinMode(CS_PIN, OUTPUT);
   Serial.begin(9600);
 
   if (!SD.begin(CS_PIN)) {
     Serial.println(F("begin failed"));
     digitalWrite(rLed, HIGH);
+    delay(2000);
+    digitalWrite(rLed, LOW);
     return;
   }
+
+  // Insert here condition to GPS data
+  // if(!GPS.begin(GPS_PIN){
+  //   delay(1000);
+  //   digitalWrite(rLed, HIGH);
+  //   digitalWrite(gLed, HIGH);
+  //   delay(2000);
+  //   return;
+  // }
+
   while (SD.exists(fileName)) {
     if (fileName[BASE_NAME_SIZE + 1] != '9') {
       fileName[BASE_NAME_SIZE + 1]++;
