@@ -1,5 +1,7 @@
 #include <SPI.h>
 #include <SD.h>
+#include <Wire.h>                  // BMP085
+#include <Adafruit_BMP085.h>       // BMP085
 // Base name must be six characters or less for short file names.
 #define FILE_BASE_NAME "Data"
 
@@ -8,10 +10,12 @@ const uint8_t CS_PIN = 10; // ChipSelect (MKRZero SD: SDCARD_SS_PIN)
 const int gLed =  11;      //
 const int rLed = 8;        //
 const int LM35 = A0;       // Temperature sensor
+Adafruit_BMP085 bmp;
 
 File dataFile;
 unsigned long int ttime;
 float temp;
+float time;
 
 const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
 char fileName[] = FILE_BASE_NAME "00.csv";
@@ -22,7 +26,7 @@ void setup(){
   pinMode(CS_PIN, OUTPUT);
   Serial.begin(9600);
 
-  if (!SD.begin(CS_PIN)) {
+  if (!SD.begin(CS_PIN) and !bmp.begin()) {
     Serial.println(F("begin failed"));
     digitalWrite(rLed, HIGH);
     delay(2000);
@@ -64,7 +68,7 @@ void setup(){
       return;
     }
   }
-  dataFfile = SD.open(fileName, FILE_WRITE);
+  dataFile = SD.open(fileName, FILE_WRITE);
   if (!dataFile) {
     // Blink 3 times faster
     Serial.println("open failed");
