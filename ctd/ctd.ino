@@ -16,7 +16,8 @@ const int gLed =  11;            //
 const int rLed = 8;              //
 const int LM35 = A0;             // Temperature sensor
 Adafruit_BMP085 bmp;
-//SoftwareSerial gpsSerial(2, 3); // TX, RX - GPS 
+const int sal = A5;
+//SoftwareSerial gpsSerial(2, 3); // TX, RX - GPS
 
 File dataFile;
 unsigned long int ttime;
@@ -33,7 +34,7 @@ void setup(){
   Serial.begin(9600);
 
   if (!SD.begin(CS_PIN) and !bmp.begin()) {
-    Serial.println(F("begin failed"));
+    Serial.println("begin failed");
     digitalWrite(rLed, HIGH);
     delay(4000);
     digitalWrite(rLed, LOW);
@@ -133,6 +134,8 @@ void loop(){
   dataFile.print(bmp.readSealevelPressure());
   dataFile.print(",");
   dataFile.print(bmp.readAltitude(101500));
+  dataFile.print(",");
+  dataFile.print(analogRead(sal));
   // if the current sea level pressure is known, it will
   // vary with weather and such. If it is 1015 millibars
   // that is equal to 101500 Pascals.
@@ -146,4 +149,5 @@ void loop(){
   Serial.print("The time is: ");
   Serial.println(ttime);
   Serial.println("");
+  Serial.println(analogRead(sal));
 }
