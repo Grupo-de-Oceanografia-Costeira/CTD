@@ -6,6 +6,7 @@
 // Connect GND to Ground
 // Connect SCL to i2c clock - on '168/'328 Arduino Uno/Duemilanove/etc thats Analog 5
 // Connect SDA to i2c data - on '168/'328 Arduino Uno/Duemilanove/etc thats Analog 4
+// Note that sensors may change the name, so check the sensor's scheme.
 
 // Base name must be six characters or less for short file names.
 #define FILE_BASE_NAME "Data"
